@@ -74,7 +74,3 @@ Array.prototype.finder = function (valor) {
   Logger.log("Not Found")
   return -1;  // if not found
 };
-
-
-///////////////////////////////////////////////////////
-

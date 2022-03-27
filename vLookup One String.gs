@@ -1,10 +1,8 @@
-
-
 // Vlookup for 1 string.
 
 // Searching for...
 const searchOneString = '22VirtualLEV 2-3 (12)SA-10:00/13:00 ONLINE';
-// const searchOneString = '22VirtualLEV 2-3 (12)SA-10:00/13:00 JOAQUIN';
+
 
 function vlookupOneString() {
   let printArray =[['Sede','searchID','Google searchroom Name']];

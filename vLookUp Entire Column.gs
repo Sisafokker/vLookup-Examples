@@ -1,4 +1,4 @@
-// Vlookup for a Range
+// Vlookup for a Range of strings
 
 function vlookupEntireColumn() {
   let printArray = [['Sede', 'ClassID', 'Google searchroom Name']];
@@ -8,8 +8,6 @@ function vlookupEntireColumn() {
   // Source Sheet
   const sheetSource = ss.getSheetByName(hojaSource);
   const getSourceColRange = [[1], [5]];
-  // console.log({getSourceCol[0]});
-  // console.log({getSourceCol[1]});
   const getSourceLastRow = sheetSource.getLastRow();
   const rangeSource = sheetSource.getRange(2, getSourceColRange[0], getSourceLastRow, getSourceColRange[1])
   const sourceData = rangeSource.getValues();
@@ -21,7 +19,7 @@ function vlookupEntireColumn() {
   // console.log({sourceData})
   // console.log({allDataSearch});
 
-  // search Column I want to match
+  // Search Column I want to match
   const searchInColumn = 1
   const searchLastRow = sheetSearch.getLastRow();
   const searchRange = sheetSearch.getRange(1, searchInColumn, searchLastRow);
@@ -68,7 +66,4 @@ Array.prototype.finder = function (valor) {
   Logger.log("Not Found")
   return -1;  // if not found
 };
-
-
-///////////////////////////////////////////////////////
 

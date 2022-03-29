@@ -2,16 +2,20 @@
 // VLOOKUP([sourceSheet, sourceRange], [searchSheet; searchRange], [ResCol#1, ResCol#2, ResCol#3])
 // VLOOKUP([Hoja1, A2:A]];[Hoja1, A2:E26]; [E, D, B])
 
+/** 
+ * Replicating VLookup function for Arrays
+ * @param {Array<strings>} fromSpecsArray [sourceSheet, sourceRange]
+ * @param {Array<strings>} searchInSpecsArray [searchSheet; searchRange]
+ * @param {Array<number>} returnColSpecsArray [Response Col#1, Response Col#2, Response Col#3]
+*/
 
-// @param fromSpecsArray [sourceSheet, sourceRange]
-// @param searchInSpecsArray [searchSheet; searchRange]
-// @param returnColSpecsArray [Response Col#1, Response Col#2, Response Col#3]
 function run(){
-   vlookup_(["1-ST22", "A3:A13"], ["1-SEARCH_IN", "A3:A"], [2, 5, 4])
+  vlookup_()
+   vlookup_(["P1", "A3:A13"], ["P2", "A3:A"], [2, 5, 4])
 }
 
 function vlookup_(fromSpecsArray, searchInSpecsArray, returnColSpecsArray) {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const ss = SpreadsheetApp.getActiveSpreadsheet();  
   // Source Sheet
   const sheetSource = ss.getSheetByName(fromSpecsArray[0]);
   //const getSourceColRange = fromSpecsArray[1].toString();
@@ -33,11 +37,6 @@ function vlookup_(fromSpecsArray, searchInSpecsArray, returnColSpecsArray) {
   const searchRange = sheetSearch.getDataRange();
   const searchData = searchRange.getValues();
    console.log({searchData});
-
-  // // Where to print
-  const sheetToPrint = sheetSource;
-  let rowToPrint = 2;
-  let colToPrint = 5;
   
   let printArray = [['Sede', 'ClassID', 'Google searchroom Name']];
   
@@ -62,7 +61,7 @@ function vlookup_(fromSpecsArray, searchInSpecsArray, returnColSpecsArray) {
     console.log({printArray});
   }
   // Printing to Sheet.
-  sheetToPrint.getRange(rowToPrint, colToPrint, printArray.length, printArray[0].length).setValues(printArray);
+  printTo_(fromSpecsArray[0],printArray,2,5)
 }
 
 // Javascript search prototype for an Array? (dig into this...))

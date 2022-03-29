@@ -1,7 +1,7 @@
 // Vlookup for a Range of strings
 
 function vlookupEntireColumn() {
-  let printArray = [['Sede', 'ClassID', 'Google searchroom Name']];
+  let printArray = [['Sede', 'ClassID', 'Google searchroom Name']];  // [<EDIT HERE>]
 //  let reorderArray = [];
 
   const ss = SpreadsheetApp.getActiveSpreadsheet();
@@ -26,11 +26,6 @@ function vlookupEntireColumn() {
   const searchData = searchRange.getValues();
   //  console.log({searchData});
 
-  // Where to print
-  const sheetToPrint = sheetSource;
-  let rowToPrint = 2;
-  let colToPrint = 5;
-
   // Searching for each item in this ARRAY
   const searchArray = sheetSource.getRange(2, 1, getSourceLastRow).getValues();
   //console.log(searchArray);
@@ -38,10 +33,10 @@ function vlookupEntireColumn() {
     var searchString = searchArray[i];
     if (searchString == '') searchString = "Nothing"
 
-    // We apply the prototpe finder generated below to the Array that has should have the match
+    // We apply the prototpe finder2 generated below to the Array that has should have the match
     // Positive Match: Returns the row number if found. ;  Negativa Match: 
     // console.log({searchString});
-    const arrayRowMatch = searchData.finder(searchString);
+    const arrayRowMatch = searchData.finder2(searchString);
     const sheetRowMatch = arrayRowMatch + 1
     console.log("arrayRowMatch %s / SheetRowMatch %s", arrayRowMatch, sheetRowMatch);
 
@@ -54,11 +49,11 @@ function vlookupEntireColumn() {
     Logger.log(printArray);
   }
   // Printing to Sheet.
-  sheetToPrint.getRange(rowToPrint, colToPrint, printArray.length, printArray[0].length).setValues(printArray);
+  printTo_(hojaSource,printArray,2,5)
 }
 
 // Javascript search prototype for an Array? (dig into this...))
-Array.prototype.finder = function (valor) {
+Array.prototype.finder2 = function (valor) {
   if (valor == "") return false;
   for (let i = 0; i < this.length; i++) {                     // this Refers to the Array
     if (this[i].toString().indexOf(valor) > -1) return i;   // i would be the row the content was found in

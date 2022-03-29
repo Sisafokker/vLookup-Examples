@@ -1,7 +1,7 @@
 // Vlookup for 1 string.
 
-// Searching for...
-const searchOneString = '22VirtualLEV 2-3 (12)SA-10:00/13:00 ONLINE';
+// Searching for... 
+const searchOneString = '22VirtualLEV 2-3 (12)SA-10:00/13:00 ONLINE'; // [<EDIT HERE>]
 
 
 function vlookupOneString() {
@@ -51,7 +51,8 @@ function vlookupOneString() {
 
 }
 
-// Javascript search prototype for an Array? (dig into this...))
+// Javascript prototype for an Array. It creates a method for an array. (dig into this...))
+// Different to the Find method, which like, Map, forEach, Some, etc, are given methods in JavaScript. 
 Array.prototype.finder1 = function (valor){
   if(valor =="") return false;
     for (let i=0; i< this.length ;i++){                     // this Refers to the Array

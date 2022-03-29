@@ -1,44 +1,53 @@
 // Vlookup Library
 // VLOOKUP([sourceSheet, sourceRange], [searchSheet; searchRange], [ResCol#1, ResCol#2, ResCol#3])
-// VLOOKUP([Hoja1, A2:A]];[Hoja1, A2:E26]; [E, D, B])
+// VLOOKUP([Hoja1, A2:A]];[Hoja1, A2:E26]; [2, 5, 4])
 
 /** 
  * Replicating VLookup function for Arrays
  * @param {Array<strings>} fromSpecsArray [sourceSheet, sourceRange]
  * @param {Array<strings>} searchInSpecsArray [searchSheet; searchRange]
  * @param {Array<number>} returnColSpecsArray [Response Col#1, Response Col#2, Response Col#3]
+ * @author Joaquin Pagliettini (www.hoakeen.com)
 */
 
 function run(){
-  vlookup_()
-   vlookup_(["P1", "A3:A13"], ["P2", "A3:A"], [2, 5, 4])
+   const resultadoFinal = vlookup_(["P1", "A3:A13"], ["P2", "A3:A"], [2, 5, 4])
+   console.log({resultadoFinal});
 }
 
 function vlookup_(fromSpecsArray, searchInSpecsArray, returnColSpecsArray) {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();  
+  const ss = SpreadsheetApp.getActiveSpreadsheet(); 
+  // Destructuring Function Arguments/Parameters
+  let [inputPageSource, inputSourceRange] = fromSpecsArray;
+  let [inputPageSearch, inputSearchRange] = searchInSpecsArray;
+  let [returnCol0, returnCol1, returnCol2] = returnColSpecsArray;
+  // console.log({inputPageSource, inputSourceRange});
+  // console.log({inputPageSearch, inputSearchRange});
+  // console.log({returnCol0, returnCol1, returnCol2});
+
   // Source Sheet
-  const sheetSource = ss.getSheetByName(fromSpecsArray[0]);
-  //const getSourceColRange = fromSpecsArray[1].toString();
-  const getSourceColRange = fromSpecsArray[1].toString();
+  const sheetSource = ss.getSheetByName(inputPageSource);
+  //const getSourceColRange = inputSourceRange.toString();
+  const getSourceColRange = inputSourceRange.toString();
   const getSourceLastRow = sheetSource.getLastRow();
   const rangeSource = sheetSource.getRange(getSourceColRange);
   const sourceData = rangeSource.getValues();
 
   // Searching Sheet
-  const sheetSearch = ss.getSheetByName(searchInSpecsArray[0]);
+  const sheetSearch = ss.getSheetByName(inputPageSearch);
   const rangeSearch = sheetSearch.getDataRange();
   const allDataSearch = rangeSearch.getValues();
   // console.log({sourceData})
   // console.log({allDataSearch});
 
   // search Column I want to match
-  // const searchInColumn = searchInSpecsArray[1];
+  // const searchInColumn = inputPageSearch;
   //const searchLastRow = sheetSearch.getLastRow();
   const searchRange = sheetSearch.getDataRange();
   const searchData = searchRange.getValues();
    console.log({searchData});
   
-  let printArray = [['Sede', 'ClassID', 'Google searchroom Name']];
+  let printArray = [];
   
   // Searching for each item in this ARRAY
   for(i = 0; i < sourceData.length; i++) {
@@ -54,14 +63,15 @@ function vlookup_(fromSpecsArray, searchInSpecsArray, returnColSpecsArray) {
 
     if (arrayRowMatch && arrayRowMatch > -1) {
       var arrayMatch = allDataSearch[arrayRowMatch]
-      printArray.push([arrayMatch[returnColSpecsArray[0]-1], arrayMatch[returnColSpecsArray[1]-1], arrayMatch[returnColSpecsArray[2]-1]]);
+      printArray.push([arrayMatch[returnCol0-1], arrayMatch[returnCol1-1], arrayMatch[returnCol2-1]]);
     } else {
       printArray.push(['', '', '']);
     }
-    console.log({printArray});
+    //console.log({printArray});
   }
-  // Printing to Sheet.
-  printTo_(fromSpecsArray[0],printArray,2,5)
+  
+  // RETURN
+  return printArray
 }
 
 // Javascript search prototype for an Array? (dig into this...))
@@ -73,3 +83,4 @@ Array.prototype.finder = function (valor) {
   Logger.log("Not Found")
   return -1;  // if not found
 };
+

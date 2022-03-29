@@ -1,11 +1,11 @@
 // Vlookup Library
-// VLOOKUP([sourceSheet, sourceRange], [searchSheet; searchRange], [ResCol#1, ResCol#2, ResCol#3])
+// VLOOKUP([sourceSheet, sourceRange], [searchSheet; searchInThisRange], [ResCol#1, ResCol#2, ResCol#3])
 // VLOOKUP([Hoja1, A2:A]];[Hoja1, A2:E26]; [2, 5, 4])
 
 /** 
  * Replicating VLookup function for Arrays
  * @param {Array<strings>} fromSpecsArray [sourceSheet, sourceRange]
- * @param {Array<strings>} searchInSpecsArray [searchSheet; searchRange]
+ * @param {Array<strings>} searchInSpecsArray [searchSheet; searchInThisRange]
  * @param {Array<number>} returnColSpecsArray [Response Col#1, Response Col#2, Response Col#3]
  * @author Joaquin Pagliettini (www.hoakeen.com)
 */
@@ -20,8 +20,8 @@ function runVLookupCursos(){
    let [arrayCompleto, arraySoloResultado] = resultadoFinal
    console.log({arrayCompleto});
    console.log('============================================');
-   console.log({arraySoloResultado});
-   console.log('============================================');
+  // console.log({arraySoloResultado});
+  // console.log('============================================');
    printTo_(quienes,arrayCompleto,3,11);
 }
 
@@ -43,8 +43,8 @@ function runVLookupProfesores(){
    let [arrayCompleto, arraySoloResultado] = resultadoFinal
    console.log({arrayCompleto});
    console.log('============================================');
-   console.log({arraySoloResultado});
-   console.log('============================================');
+  // console.log({arraySoloResultado});
+  // console.log('============================================');
    printTo_(quienes,arrayCompleto,3,11);
 }
 
@@ -63,27 +63,26 @@ function vlookupAndMix_(fromSpecsArray, addToResult = {}, searchInSpecsArray, re
         // console.log({returnCol0, returnCol1, returnCol2, returnCol3});
 
 // SOURCE SHEET (1ST SHEET)
-  const sheetSource = ss.getSheetByName(inputSourcePage);
-  const allDataSource = sheetSource.getRange(inputSourceFullRange).getValues();
+  const sourceSheet = ss.getSheetByName(inputSourcePage);
+  const allDataInSourceSheet = sourceSheet.getRange(inputSourceFullRange).getValues();
     
-  const rangeSourceToFind = sheetSource.getRange(inputRangeToVlookup.toString());
-  const sourceDataToFindUnfiltered = rangeSourceToFind.getValues();
-  const sourceData = sourceDataToFindUnfiltered.filter((rowVal) => rowVal != '');
-          // console.log({sourceData});
+  const sourceRangeToFind = sourceSheet.getRange(inputRangeToVlookup.toString());
+  const sourceDataToFind_Unfiltered = sourceRangeToFind.getValues();
+  const sourceDataClean = sourceDataToFind_Unfiltered.filter((rowVal) => rowVal != '');
+          // console.log(inputSourcePage,{sourceDataClean});
 
 // SEARCHING SHEET (2ND SHEET)
-  const sheetSearch = ss.getSheetByName(inputPageSearchIn);
-  const rangeSearch = sheetSearch.getDataRange();
-  const allDataSearch = rangeSearch.getValues();
-          // console.log({sourceData})
-          // console.log({allDataSearch});
+  const searchSheet = ss.getSheetByName(inputPageSearchIn);
+  const allDataInSearchSheet = searchSheet.getDataRange().getValues();
+          // console.log(inputSourcePage,{sourceDataClean})
+          // console.log({allDataInSearchSheet});
 
-// THE TWO ARRAYS WE NEED TO POPULATE
+// THE TWO EMPTY ARRAYS WE NEED TO POPULATE
   let sourceArray = []; // To add selected columns from Source Sheet
   let printArray = [];  // To return found columns from Search Sheet
   
-// POPULATING SOURCE ARRAY BY FILTERING ALLDATASOURCE AND THEN PUSHING SPECIFIED COLUMNS
-   const filteredDataSource = allDataSource.filter((col) => col[1] !="");
+// POPULATING SOURCE ARRAY BY FILTERING allDataInSourceSheet AND THEN PUSHING SPECIFIED COLUMNS
+   const filteredDataSource = allDataInSourceSheet.filter((col) => col[addToResultCol0] !="");
   // console.log(filteredDataSource) ;
    for (var j = 0; j < filteredDataSource.length; j++){
       let dataSourceParcial = filteredDataSource[j]
@@ -93,26 +92,27 @@ function vlookupAndMix_(fromSpecsArray, addToResult = {}, searchInSpecsArray, re
          //  console.log({sourceArray}) ;
 
 
-// SEARCH COLUMN WE WANT TO MATCH
-   const searchRange = sheetSearch.getDataRange(); /// No deberia ser asi...-----------------------------------
-   const searchData = searchRange.getValues();
-          // console.log({searchData});
+// FINDING VALUES IN SEARCH SHEET
+   const searchInThisRange = searchSheet.getDataRange(); 
+   //const searchInThisRange = searchSheet.getRange(inputSearchInRange.toString());  // If I activate this one, there is a 3 or 4 row index difference
+   const searchInsideThisData = searchInThisRange.getValues();
+           console.log(inputPageSearchIn,{searchInsideThisData});
    
-// SEARCHING FOR EACH ITEM IN THE SOURCE ARRAY TO SEARCH
-   for(i = 0; i < sourceData.length; i++) {
-     var sourceString = sourceData[i];
+// SEARCHING FOR EACH ITEM 
+   for(i = 0; i < sourceDataClean.length; i++) {
+     var sourceString = sourceDataClean[i];
      if (sourceString == '') sourceString = "Nothing"
 
      // We apply the prototpe myFinderMethod generated below to the Array that has should have the match
      // Positive Match: Returns the row number if found. ;  
-     const indexOfMatch = searchData.myFinderMethod(sourceString);
+     const indexOfMatch = searchInsideThisData.myFinderMethod(sourceString);
             // console.log({indexOfMatch})
      // Different index if its an array or a row in Google Sheets
      const gSheetRowMatch = indexOfMatch + 1
             // console.log("indexOfMatch %s / gSheetRowMatch %s", indexOfMatch, gSheetRowMatch);
 
      if (indexOfMatch && indexOfMatch > -1) {
-       var fullRowOfMatch = allDataSearch[indexOfMatch]
+       var fullRowOfMatch = allDataInSearchSheet[indexOfMatch]
        printArray.push([fullRowOfMatch[returnCol0 - 1], fullRowOfMatch[returnCol1 - 1], fullRowOfMatch[returnCol2 - 1], fullRowOfMatch[returnCol3-1]]);
      } else {
         printArray.push(['', '', '','']);
@@ -122,7 +122,7 @@ function vlookupAndMix_(fromSpecsArray, addToResult = {}, searchInSpecsArray, re
   
   // RETURN
   var mixArray = []
-  console.log(sourceArray.length);
+  console.log(inputSourcePage, sourceArray.length);
   for (y = 0; y < sourceArray.length ; y++) {
    // console.log({y})
      mixArray.push(sourceArray[y].concat(printArray[y]));

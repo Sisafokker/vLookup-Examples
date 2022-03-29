@@ -14,47 +14,65 @@
 // El HEADER de la columna de SOURCE tiene que coincidir exactamente con el HEADER de la columna de la hoja SEARCH
 
 function runVLookupCursos(){
-   const resultadoFinal = vlookupAndMix_(["ABMCursos", "A3:A","A3:H"], [1, 2,7,8], ["CLASES21", "A3:A"], [4, 3, 5, 6])
+  const quienes = "ABMCursos";
+  const deDonde = "CLASES21"
+   const resultadoFinal = vlookupAndMix_([quienes,"A3:A","A3:H"], [1,2,7,8], [deDonde,"A3:A"], [4, 3, 5, 6])
    let [arrayCompleto, arraySoloResultado] = resultadoFinal
    console.log({arrayCompleto});
-   //console.log({arraySoloResultado});
-   console.log('======================');
-   printTo_('ABMCursos',arrayCompleto,3,11);
+   console.log('============================================');
+   console.log({arraySoloResultado});
+   console.log('============================================');
+   printTo_(quienes,arrayCompleto,3,11);
 }
 
 function runVLookupAlumnos(){
-   const resultadoFinal = vlookupAndMix_(["ABMAlumnos", "A3:A","A3:L"], [1,2,8,9], ["CLASES21", "A3:A"], [4, 3, 5, 6])
+  const quienes = "ABMAlumnos";
+  const deDonde = "CLASES21"
+   const resultadoFinal = vlookupAndMix_([quienes, "A3:A","A3:L"], [1,2,8,9], [deDonde, "A3:A"], [4, 3, 5, 6])
    let [arrayCompleto, arraySoloResultado] = resultadoFinal
    console.log({arrayCompleto});
    //console.log({arraySoloResultado});
    console.log('======================');
-   printTo_('ABMAlumnos',arrayCompleto,3,14);
+   printTo_(quienes,arrayCompleto,3,14);
 }
+
+function runVLookupProfesores(){
+  const quienes = "ABMProfesores";
+  const deDonde = "CLASES21"
+   const resultadoFinal = vlookupAndMix_([quienes, "A3:A","A3:I"], [1,2,9,8], [deDonde, "A3:A"], [4, 3, 5, 6])
+   let [arrayCompleto, arraySoloResultado] = resultadoFinal
+   console.log({arrayCompleto});
+   console.log('============================================');
+   console.log({arraySoloResultado});
+   console.log('============================================');
+   printTo_(quienes,arrayCompleto,3,11);
+}
+
 
 function vlookupAndMix_(fromSpecsArray, addToResult = {}, searchInSpecsArray, returnColSpecsArray) {
   const ss = SpreadsheetApp.getActiveSpreadsheet(); 
 
 // DESTRUCTURING ARGUMENTS/PARAMETERS
-  let [inputPageSource, inputSourceRangeToFind, inputSourceAllRange] = fromSpecsArray;
-  let [addResultCol0, addResultCol1, addResultCol2, addResultCol3] = addToResult;
-  let [inputPageSearch, inputSearchRange] = searchInSpecsArray;
+  let [inputSourcePage, inputRangeToVlookup, inputSourceFullRange] = fromSpecsArray;
+  let [addToResultCol0, addToResultCol1, addToResultCol2, addToResultCol3] = addToResult;
+  let [inputPageSearchIn, inputSearchInRange] = searchInSpecsArray;
   let [returnCol0, returnCol1, returnCol2, returnCol3] = returnColSpecsArray;
-        // console.log({inputPageSource, inputSourceRangeToFind});
-        // console.log({addResultCol0, addResultCol1, addResultCol2, addResultCol3});
-        // console.log({inputPageSearch, inputSearchRange});
+        // console.log({inputSourcePage, inputRangeToVlookup});
+        // console.log({addToResultCol0, addToResultCol1, addToResultCol2, addToResultCol3});
+        // console.log({inputPageSearchIn, inputSearchInRange});
         // console.log({returnCol0, returnCol1, returnCol2, returnCol3});
 
 // SOURCE SHEET (1ST SHEET)
-  const sheetSource = ss.getSheetByName(inputPageSource);
-  const allDataSource = sheetSource.getRange(inputSourceAllRange.toString()).getValues();
+  const sheetSource = ss.getSheetByName(inputSourcePage);
+  const allDataSource = sheetSource.getRange(inputSourceFullRange).getValues();
     
-  const rangeSourceToFind = sheetSource.getRange(inputSourceRangeToFind.toString());
+  const rangeSourceToFind = sheetSource.getRange(inputRangeToVlookup.toString());
   const sourceDataToFindUnfiltered = rangeSourceToFind.getValues();
   const sourceData = sourceDataToFindUnfiltered.filter((rowVal) => rowVal != '');
           // console.log({sourceData});
 
 // SEARCHING SHEET (2ND SHEET)
-  const sheetSearch = ss.getSheetByName(inputPageSearch);
+  const sheetSearch = ss.getSheetByName(inputPageSearchIn);
   const rangeSearch = sheetSearch.getDataRange();
   const allDataSearch = rangeSearch.getValues();
           // console.log({sourceData})
@@ -70,7 +88,7 @@ function vlookupAndMix_(fromSpecsArray, addToResult = {}, searchInSpecsArray, re
    for (var j = 0; j < filteredDataSource.length; j++){
       let dataSourceParcial = filteredDataSource[j]
           // console.log({dataSourceParcial});
-      sourceArray.push([dataSourceParcial[addResultCol0-1],dataSourceParcial[addResultCol1-1],dataSourceParcial[addResultCol2-1],dataSourceParcial[addResultCol3-1]])
+      sourceArray.push([dataSourceParcial[addToResultCol0-1],dataSourceParcial[addToResultCol1-1],dataSourceParcial[addToResultCol2-1],dataSourceParcial[addToResultCol3-1]])
     }
          //  console.log({sourceArray}) ;
 
@@ -97,8 +115,7 @@ function vlookupAndMix_(fromSpecsArray, addToResult = {}, searchInSpecsArray, re
        var fullRowOfMatch = allDataSearch[indexOfMatch]
        printArray.push([fullRowOfMatch[returnCol0 - 1], fullRowOfMatch[returnCol1 - 1], fullRowOfMatch[returnCol2 - 1], fullRowOfMatch[returnCol3-1]]);
      } else {
-       sourceArray.push(['', '', '','']);
-       printArray.push(['', '', '','']);
+        printArray.push(['', '', '','']);
      }
     //console.log({printArray});
   }
